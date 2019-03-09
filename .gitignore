@@ -1,6 +1,9 @@
 hueSignalCredentials.json
 
-# PyCharm stuff
+#Jupyter notebook
+test.ipynb
+
+# PyCharm
 .idea/
 
 # Byte-compiled / optimized / DLL files
