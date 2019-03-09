@@ -1,3 +1,10 @@
+import json
+import requests
+import time
+import os
+from functools import wraps
+
+
 class Credentials:
 
     def __init__(self, internal_ip_address=None, username=None):
@@ -26,13 +33,16 @@ class Credentials:
 
     def create(self):
         """
-        Finds the internal ip address and creates a username. The user should phisically press the bridge button.
+        Finds the internal ip address and creates a username. The user should physically press the bridge button.
         """
 
         self._get_internal_ip_address()
-        req = requests.post('http://{}/api'.format(self.internal_ip_address),
-                            data=json.dumps({"devicetype": "hueSignal"}))
+
+        requests.post('http://{}/api'.format(self.internal_ip_address),
+                      data=json.dumps({"devicetype": "hueSignal"}))
+
         print("Please go and press the button on the bridge!")
+
         i = 20
         while i > 0:
             time.sleep(1)
@@ -43,7 +53,7 @@ class Credentials:
 
         if 'success' in req.json()[0]:
             self.username = req.json()[0]['success']['username']
-            self._save_user_info()
+            self._save_credentials()
         else:
             print("You didn't press the button, didn't you? Try again.")
         return
@@ -58,7 +68,7 @@ class HueSignal:
         self.blue = {'on': True, 'sat': 254, 'bri': 254, 'hue': 43690, 'xy': [0.167, 0.04]}
         self.good = self.green
         self.bad = self.red
-        self.ligth = 'http://{}/api/{}/lights/1/state'.format(self.internal_ip_address, self.username)
+        self.light = 'http://{}/api/{}/lights/1/state'.format(self.internal_ip_address, self.username)
 
         if os.path.isfile('./hueSignalCredentials.json'):
             self._get_credentials_from_file()
@@ -81,9 +91,9 @@ class HueSignal:
 
     def __call__(self, func):
 
-        @functools.wraps(func)
-        def hueSignalWrapper(*args, **kwargs):
-            result = None
+        @wraps(func)
+        def hue_signal_wrapper(*args, **kwargs):
+    
             try:
                 result = func(*args, **kwargs)
                 requests.put(self.light, data=json.dumps(self.good))
@@ -95,4 +105,4 @@ class HueSignal:
 
             return result
 
-        return hueSignalWrapper
+        return hue_signal_wrapper
