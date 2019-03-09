@@ -93,7 +93,7 @@ class HueSignal:
 
         @wraps(func)
         def hue_signal_wrapper(*args, **kwargs):
-    
+
             try:
                 result = func(*args, **kwargs)
                 requests.put(self.light, data=json.dumps(self.good))
