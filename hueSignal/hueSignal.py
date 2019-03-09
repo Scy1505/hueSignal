@@ -68,12 +68,13 @@ class HueSignal:
         self.blue = {'on': True, 'sat': 254, 'bri': 254, 'hue': 43690, 'xy': [0.167, 0.04]}
         self.good = self.green
         self.bad = self.red
-        self.light = 'http://{}/api/{}/lights/1/state'.format(self.internal_ip_address, self.username)
 
         if os.path.isfile('./hueSignalCredentials.json'):
             self._get_credentials_from_file()
         else:
             self._create_new_credentials()
+
+        self.light = 'http://{}/api/{}/lights/1/state'.format(self.internal_ip_address, self.username)
 
     def _get_credentials_from_file(self):
 

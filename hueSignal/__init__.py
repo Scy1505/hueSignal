@@ -1,3 +1,4 @@
 from .hueSignal import *
 
-hueSginal = HueSignal()
+
+hueSignal = HueSignal()
